@@ -1,0 +1,811 @@
+:_mod-docs-content-type: ASSEMBLY
+[id="cluster-observability-operator-overview"]
+= Cluster Observability Operator overview
+:_mod-docs-content-type: SNIPPET
+// The {product-title} attribute provides the context-sensitive name of the relevant OpenShift distribution, for example, "OpenShift Container Platform" or "OKD". The {product-version} attribute provides the product version relative to the distribution, for example "4.9".
+// {product-title} and {product-version} are parsed when AsciiBinder queries the _distro_map.yml file in relation to the base branch of a pull request.
+// See https://github.com/openshift/openshift-docs/blob/main/contributing_to_docs/doc_guidelines.adoc#product-name-and-version for more information on this topic.
+// Other common attributes are defined in the following lines:
+:data-uri:
+:icons:
+:experimental:
+:toc: macro
+:toc-title:
+:imagesdir: images
+:prewrap!:
+// n-1 and n+1 OCP versions relative to the current branch's {product-version} attr
+:ocp-nminus1: 4.18
+:ocp-nplus1: 4.20
+// Operating system attributes
+:op-system-first: Red{nbsp}Hat Enterprise Linux CoreOS (RHCOS)
+:op-system: RHCOS
+:op-system-lowercase: rhcos
+:op-system-base: RHEL
+:op-system-base-full: Red{nbsp}Hat Enterprise Linux (RHEL)
+:op-system-version: 9.x
+:op-system-version-9: 9
+:op-system-ai: Red{nbsp}Hat Enterprise Linux AI
+:tsb-name: Template Service Broker
+:kebab: image:kebab.png[title="Options menu"]
+:ai-full: Assisted Installer
+:cluster-manager-first: Red Hat OpenShift Cluster Manager
+:cluster-manager: OpenShift Cluster Manager
+:cluster-manager-url: link:https://console.redhat.com/openshift[OpenShift Cluster Manager]
+:cluster-manager-url-pull: link:https://console.redhat.com/openshift/install/pull-secret[pull secret from Red Hat OpenShift Cluster Manager]
+:insights-advisor-url: link:https://console.redhat.com/openshift/insights/advisor/[Insights Advisor]
+:hybrid-console: Red{nbsp}Hat Hybrid Cloud Console
+:hybrid-console-second: Hybrid Cloud Console
+:hybrid-console-url: link:https://console.redhat.com[Red Hat Hybrid Cloud Console]
+// OADP attributes
+:oadp-first: OpenShift API for Data Protection (OADP)
+:oadp-full: OpenShift API for Data Protection
+:oadp-short: OADP
+:oadp-version: 1.5.0
+:oadp-version-1-3: 1.3.6
+:oadp-version-1-4: 1.4.5
+:oadp-version-1-5: 1.5.0
+:oadp-bsl-api: backupstoragelocations.velero.io
+:velero-link: link:https://{velero-domain}/docs/v{velero-version}/[Velero {velero-version}]
+:oc-first: pass:quotes[OpenShift CLI (`oc`)]
+:product-registry: OpenShift image registry
+:product-mirror-registry: Mirror registry for Red Hat OpenShift
+:rh-storage-first: Red Hat OpenShift Data Foundation
+:rh-storage: OpenShift Data Foundation
+:rh-rhacm-title: Red{nbsp}Hat Advanced Cluster Management
+:rh-rhacm-first: Red{nbsp}Hat Advanced Cluster Management (RHACM)
+:rh-rhacm: RHACM
+:rh-rhacm-version: 2.13
+:osc: OpenShift sandboxed containers
+:osc-operator: OpenShift sandboxed containers Operator
+:cert-manager-operator: cert-manager Operator for Red Hat OpenShift
+:external-secrets-operator: External Secrets Operator for Red Hat OpenShift
+:external-secrets-operator-short: External Secrets Operator
+:secondary-scheduler-operator-full: Secondary Scheduler Operator for Red Hat OpenShift
+:secondary-scheduler-operator: Secondary Scheduler Operator
+:descheduler-operator: Kube Descheduler Operator
+:cli-manager: CLI Manager Operator
+// Backup and restore
+:velero-domain: velero.io
+:velero-version: 1.16
+:launch: image:app-launcher.png[title="Application Launcher"]
+:mtc-first: Migration Toolkit for Containers (MTC)
+:mtc-short: MTC
+:mtc-full: Migration Toolkit for Containers
+:mtc-version: 1.8
+:mtc-version-z: 1.8.8
+:mtc-legacy-image: 1.7
+:mtv-first: Migration Toolkit for Virtualization (MTV)
+:mtv-short: MTV
+:mtv-full: Migration Toolkit for Virtualization
+:mtv-version: 2.8
+// builds (Valid only in 4.11 and later)
+:builds-v2title: Builds for Red Hat OpenShift
+:builds-v2shortname: OpenShift Builds v2
+:builds-v1shortname: OpenShift Builds v1
+//gitops
+:gitops-title: Red{nbsp}Hat OpenShift GitOps
+:gitops-shortname: GitOps
+:gitops-ver: 1.1
+:rh-app-icon: image:red-hat-applications-menu-icon.jpg[title="Red Hat applications"]
+//pipelines
+:pipelines-title: Red{nbsp}Hat OpenShift Pipelines
+:pipelines-shortname: OpenShift Pipelines
+:pipelines-ver: pipelines-1.18
+:pipelines-version-number: 1.18
+:tekton-chains: Tekton Chains
+:tekton-hub: Tekton Hub
+:artifact-hub: Artifact Hub
+:pac: Pipelines as Code
+//odo
+:odo-title: odo
+//OpenShift Kubernetes Engine
+:oke: OpenShift Kubernetes Engine
+//OpenShift Platform Plus
+:opp: OpenShift Platform Plus
+//openshift virtualization (cnv)
+:VirtProductName: OpenShift Virtualization
+:VirtVersion: 4.19
+:HCOVersion: 4.19.0
+:CNVNamespace: openshift-cnv
+:CNVOperatorDisplayName: OpenShift Virtualization Operator
+:CNVSubscriptionSpecSource: redhat-operators
+:CNVSubscriptionSpecName: kubevirt-hyperconverged
+:IBMFusionFirst: IBM Fusion Access for SAN
+:FusionSAN: Fusion Access for SAN
+:delete: image:delete.png[title="Delete"]
+// openshift virtualization engine (ove)
+:ove-first: Red{nbsp}Hat OpenShift Virtualization Engine
+:ove: OpenShift Virtualization Engine
+//distributed tracing
+:DTProductName: Red Hat OpenShift Distributed Tracing Platform
+:DTShortName: Distributed Tracing Platform
+:DTProductVersion: 3.1
+:JaegerName: Red Hat OpenShift Distributed Tracing Platform (Jaeger)
+:JaegerOperator: Red Hat OpenShift Distributed Tracing Platform
+:JaegerShortName: Distributed Tracing Platform (Jaeger)
+:JaegerOperator: Red Hat OpenShift Distributed Tracing Platform
+:JaegerVersion: 1.53.0
+:OTELName: Red{nbsp}Hat build of OpenTelemetry
+:OTELShortName: Red{nbsp}Hat build of OpenTelemetry
+:OTELOperator: Red{nbsp}Hat build of OpenTelemetry Operator
+:OTELVersion: 0.93.0
+:TempoName: Red Hat OpenShift Distributed Tracing Platform
+:TempoShortName: Distributed Tracing Platform
+:TempoOperator: Tempo Operator
+:TempoVersion: 2.3.1
+//telco
+//lightspeed
+:ols-official: Red{nbsp}Hat OpenShift Lightspeed
+:ols: OpenShift Lightspeed
+//logging
+:logging: logging
+:logging-uc: Logging
+:for: for Red{nbsp}Hat OpenShift
+:clo: Red{nbsp}Hat OpenShift Logging Operator
+:loki-op: Loki Operator
+:es-op: OpenShift Elasticsearch Operator
+:log-plug: logging Console plugin
+//observability
+:ObservabilityLongName: Red{nbsp}Hat OpenShift Observability
+:ObservabilityShortName: Observability
+// Cluster Monitoring Operator
+:cmo-first: Cluster Monitoring Operator (CMO)
+:cmo-full: Cluster Monitoring Operator
+:cmo-short: CMO
+//power monitoring
+:PM-title-c: Power monitoring for Red Hat OpenShift
+:PM-title: power monitoring for Red Hat OpenShift
+:PM-shortname: power monitoring
+:PM-shortname-c: Power monitoring
+:PM-operator: Power Monitoring Operator
+:PM-kepler: Kepler
+//serverless
+:ServerlessProductName: OpenShift Serverless
+:ServerlessProductShortName: Serverless
+:ServerlessOperatorName: OpenShift Serverless Operator
+:FunctionsProductName: OpenShift Serverless Functions
+//service mesh v2
+:product-dedicated: Red{nbsp}Hat OpenShift Dedicated
+:product-rosa: Red{nbsp}Hat OpenShift Service on AWS
+:SMProductName: Red{nbsp}Hat OpenShift Service Mesh
+:SMProductShortName: Service Mesh
+:SMProductVersion: 2.6.9
+:MaistraVersion: 2.6
+:KialiProduct: Kiali Operator provided by Red Hat
+:SMPlugin: OpenShift Service Mesh Console (OSSMC) plugin
+:SMPluginShort: OSSMC plugin
+//Service Mesh v1
+:SMProductVersion1x: 1.1.18.2
+//Windows containers
+:productwinc: Red{nbsp}Hat OpenShift support for Windows Containers
+// Red Hat Quay Container Security Operator
+:rhq-cso: Red{nbsp}Hat Quay Container Security Operator
+// Red Hat Quay
+:quay: Red{nbsp}Hat Quay
+:sno: single-node OpenShift
+:sno-caps: Single-node OpenShift
+:sno-okd: single-node OKD
+:sno-caps-okd: Single-node OKD
+//TALO and Redfish events Operators
+:cgu-operator-first: Topology Aware Lifecycle Manager (TALM)
+:cgu-operator-full: Topology Aware Lifecycle Manager
+:cgu-operator: TALM
+:redfish-operator: Bare Metal Event Relay
+//Formerly known as CodeReady Containers and CodeReady Workspaces
+:openshift-local-productname: Red{nbsp}Hat OpenShift Local
+:openshift-dev-spaces-productname: Red{nbsp}Hat OpenShift Dev Spaces
+:factory-prestaging-tool: factory-precaching-cli tool
+:factory-prestaging-tool-caps: Factory-precaching-cli tool
+:openshift-networking: Red Hat OpenShift Networking
+// TODO - this probably needs to be different for OKD
+//ifdef::openshift-origin[]
+//:openshift-networking: OKD Networking
+//endif::[]
+// logical volume manager storage
+:lvms-first: Logical Volume Manager (LVM) Storage
+:lvms: LVM Storage
+//Version-agnostic OLM
+:olm-first: Operator Lifecycle Manager (OLM)
+:olm: OLM
+//Initial version of OLM that shipped with OCP 4, aka "v0" and f/k/a "existing" during OLM v1's pre-4.18 TP phase
+:olmv0: OLM (Classic)
+:olmv0-caps: OLM (Classic)
+:olmv0-first: Operator Lifecycle Manager (OLM) Classic
+:olmv0-first-caps: Operator Lifecycle Manager (OLM) Classic
+//Next-gen (OCP 4.14+) Operator Lifecycle Manager, f/k/a "1.0"
+:olmv1: OLM v1
+:olmv1-first: Operator Lifecycle Manager (OLM) v1
+//
+:ztp-first: GitOps Zero Touch Provisioning (ZTP)
+:ztp: GitOps ZTP
+:3no: three-node OpenShift
+:3no-caps: Three-node OpenShift
+:run-once-operator: Run Once Duration Override Operator
+// Web terminal
+:web-terminal-op: Web Terminal Operator
+:devworkspace-op: DevWorkspace Operator
+:secrets-store-driver: Secrets Store CSI driver
+:secrets-store-operator: Secrets Store CSI Driver Operator
+// Cluster Observability Operator
+:coo-first: Cluster Observability Operator (COO)
+:coo-full: Cluster Observability Operator
+:coo-short: COO
+// ODF
+:odf-first: Red{nbsp}Hat OpenShift Data Foundation (ODF)
+:odf-full: Red{nbsp}Hat OpenShift Data Foundation
+:odf-short: ODF
+:rh-dev-hub: Red Hat Developer Hub
+// IBU
+:lcao: Lifecycle Agent
+// Cloud provider names
+// Alibaba Cloud
+:alibaba: Alibaba Cloud
+// Amazon Web Services (AWS)
+:aws-first: Amazon Web Services (AWS)
+:aws-full: Amazon Web Services
+:aws-short: AWS
+// Google Cloud Platform (GCP)
+:gcp-first: Google Cloud Platform (GCP)
+:gcp-full: Google Cloud Platform
+:gcp-short: GCP
+// IBM general
+:ibm-name: IBM(R)
+:ibm-title: IBM
+// IBM Cloud
+:ibm-cloud-name: IBM Cloud(R)
+:ibm-cloud-title: IBM Cloud
+// IBM Cloud Bare Metal (Classic)
+:ibm-cloud-bm: IBM Cloud(R) Bare Metal (Classic)
+:ibm-cloud-bm-title: IBM Cloud Bare Metal (Classic)
+//IBM Cloud Object Storage (COS)
+:ibm-cloud-object-storage: IBM Cloud Object Storage (COS)
+// IBM Power
+:ibm-power-name: IBM Power(R)
+:ibm-power-title: IBM Power
+:ibm-power-server-name: IBM Power(R) Virtual Server
+:ibm-power-server-title: IBM Power Virtual Server
+// IBM zSystems
+:ibm-z-name: IBM Z(R)
+:ibm-z-title: IBM Z
+:ibm-linuxone-name: IBM(R) LinuxONE
+:ibm-linuxone-title: IBM LinuxONE
+// Microsoft Azure
+:azure-first: Microsoft Azure
+:azure-full: Microsoft Azure
+:azure-short: Azure
+//Oracle
+:oci-first: Oracle(R) Cloud Infrastructure (OCI)
+:oci-first-no-rt: Oracle Cloud Infrastructure (OCI)
+:oci: OCI
+:oci-ccm-full: Oracle Cloud Controller Manager (CCM)
+:oci-ccm: Oracle CCM
+:oci-csi-full: Oracle Container Storage Interface (CSI)
+:oci-csi: Oracle CSI
+:ocid-first: Oracle(R) Cloud Identifier (OCID)
+:ocid: OCID
+:ocvs-first: Oracle(R) Cloud VMware Solution (OCVS)
+:ocvs: OCVS
+:oci-c3: Oracle(R) Compute Cloud@Customer
+:oci-c3-no-rt: Oracle Compute Cloud@Customer
+:oci-c3-short: Compute Cloud@Customer
+:oci-pca: Oracle(R) Private Cloud Appliance
+:oci-pca-no-rt: Oracle Private Cloud Appliance
+:oci-pca-short: Private Cloud Appliance
+// Red Hat OpenStack Platform (RHOSP)/OpenStack
+:rh-openstack-first: Red{nbsp}Hat OpenStack Platform (RHOSP)
+:rh-openstack: RHOSP
+:rhoso-first: Red{nbsp}Hat OpenStack Services on OpenShift (RHOSO)
+:rhoso: RHOSO
+// VMware vSphere
+:vmw-first: VMware vSphere
+:vmw-full: VMware vSphere
+:vmw-short: vSphere
+//Token-based auth products
+//AWS Security Token Service
+:sts-first: Security Token Service (STS)
+:sts-full: Security Token Service
+:sts-short: STS
+//Microsoft Entra Workload ID (FKA Azure Active Directory Workload Identities)
+:entra-first: Microsoft Entra Workload ID
+:entra-short: Workload ID
+//Google Cloud Platform Workload Identity
+:gcp-wid-first: Google Cloud Platform Workload Identity
+:gcp-wid-short: GCP Workload Identity
+// Cluster API terminology
+// Cluster CAPI Operator
+:cluster-capi-operator: Cluster CAPI Operator
+// Cluster API Provider Amazon Web Services (AWS)
+:cap-aws-first: Cluster API Provider Amazon Web Services (AWS)
+:cap-aws-short: Cluster API Provider AWS
+// Cluster API Provider Google Cloud Platform (GCP)
+:cap-gcp-first: Cluster API Provider Google Cloud Platform (GCP)
+:cap-gcp-short: Cluster API Provider GCP
+// Cluster API Provider IBM Cloud
+:cap-ibm-first: Cluster API Provider IBM Cloud
+:cap-ibm-short: Cluster API Provider IBM Cloud
+// Cluster API Provider Kubevirt
+:cap-kubevirt-first: Cluster API Provider Kubevirt
+:cap-kubevirt-short: Cluster API Provider Kubevirt
+// Cluster API Provider Microsoft Azure
+:cap-azure-first: Cluster API Provider Microsoft Azure
+:cap-azure-short: Cluster API Provider Azure
+// Cluster API Provider Nutanix
+:cap-nutanix-first: Cluster API Provider Nutanix
+:cap-nutanix-short: Cluster API Provider Nutanix
+// Cluster API Provider OpenStack
+:cap-openstack-first: Cluster API Provider OpenStack
+:cap-openstack-short: Cluster API Provider OpenStack
+// Cluster API Provider Oracle Cloud Infrastructure (OCI)
+:cap-oci-first: Cluster API Provider Oracle Cloud Infrastructure (OCI)
+:cap-oci-short: Cluster API Provider OCI
+// Cluster API Provider VMware vSphere
+:cap-vsphere-first: Cluster API Provider VMware vSphere
+:cap-vsphere-short: Cluster API Provider vSphere
+// Cluster API Provider Metal3
+:cap-bare-metal-first: Cluster API Provider Metal3
+:cap-bare-metal-short: Cluster API Provider Metal3
+// Hosted control planes related attributes
+:hcp-capital: Hosted control planes
+:hcp: hosted control planes
+:mce: multicluster engine for Kubernetes Operator
+:mce-short: multicluster engine Operator
+//AI names; OpenShift AI can be used as the family name
+:rhoai-full: Red{nbsp}Hat OpenShift AI
+:rhoai: RHOAI
+:rhoai-diy: Red{nbsp}Hat OpenShift AI Self-Managed
+:rhoai-cloud: Red{nbsp}Hat OpenShift AI Cloud Service
+:ai-first: artificial intelligence (AI)
+//RHEL AI attribute listed with RHEL family
+//zero trust workload identity manager
+:zero-trust-full: Zero Trust Workload Identity Manager
+:spiffe-full: Secure Production Identity Framework for Everyone (SPIFFE)
+:svid-full: SPIFFE Verifiable Identity Document (SVID)
+:spire-full: SPIFFE Runtime Environment
+// Formerly on-cluster image layering
+:image-mode-os-caps: Image mode for OpenShift
+:image-mode-os-lower: image mode for OpenShift
+// Formerly on-cluster layering
+:image-mode-os-on-caps: On-cluster image mode
+:image-mode-os-on-lower: on-cluster image mode
+// Formerly out-of-cluster layering
+:image-mode-os-out-caps: Out-of-cluster image mode
+:image-mode-os-out-lower: out-of-cluster image mode
+:context: cluster_observability_operator_overview
+
+toc::[]
+
+
+The {coo-first} is an optional component of the {product-title} designed for creating and managing highly customizable monitoring stacks. It enables cluster administrators to automate configuration and management of monitoring needs extensively, offering a more tailored and detailed view of each namespace compared to the default {product-title} monitoring system.
+
+The {coo-short} deploys the following monitoring components:
+
+* **Prometheus** - A highly available Prometheus instance capable of sending metrics to an external endpoint by using remote write.
+* **Thanos Querier** (optional) - Enables querying of Prometheus instances from a central location.
+* **Alertmanager** (optional) - Provides alert configuration capabilities for different services.
+* **xref:../../observability/cluster_observability_operator/ui_plugins/observability-ui-plugins-overview.adoc#observability-ui-plugins-overview[UI plugins]** (optional) - Enhances the observability capabilities with plugins for monitoring, logging, distributed tracing and troubleshooting.
+* **Korrel8r** (optional) - Provides observability signal correlation, powered by the open source Korrel8r project.
+* **xref:../../observability/cluster_observability_operator/ui_plugins/monitoring-ui-plugin.adoc#coo-incident-detection-overview_monitoring-ui-plugin[Incident detection]** (optional) - Groups related alerts into incidents, to help you identify the root causes of alert bursts.
+
+:leveloffset: +1
+
+// Module included in the following assemblies:
+
+// * observability/cluster_observability_operator/cluster-observability-operator-overview.adoc
+
+:_mod-docs-content-type: CONCEPT
+[id="coo-versus-default-ocp-monitoring_{context}"]
+= {coo-short} compared to default monitoring stack
+
+The {coo-short} components function independently of the default in-cluster monitoring stack, which is deployed and managed by the {cmo-first}.
+Monitoring stacks deployed by the two Operators do not conflict. You can use a {coo-short} monitoring stack in addition to the default platform monitoring components deployed by the {cmo-short}.
+
+The key differences between {coo-short} and the default in-cluster monitoring stack are shown in the following table:
+
+[cols="1,3,3", options="header"]
+|===
+| Feature      | {coo-short}      | Default monitoring stack
+
+| **Scope and integration**
+| Offers comprehensive monitoring and analytics for enterprise-level needs, covering cluster and workload performance.
+
+However, it lacks direct integration with {product-title} and typically requires an external Grafana instance for dashboards.
+| Limited to core components within the cluster, for example, API server and etcd, and to OpenShift-specific namespaces.
+
+There is deep integration into {product-title} including console dashboards and alert management in the console.
+
+| **Configuration and customization**
+| Broader configuration options including data retention periods, storage methods, and collected data types.
+
+The {coo-short} can delegate ownership of single configurable fields in custom resources to users by using Server-Side Apply (SSA), which enhances customization.
+| Built-in configurations with limited customization options.
+
+| **Data retention and storage**
+| Long-term data retention, supporting historical analysis and capacity planning
+| Shorter data retention times, focusing on short-term monitoring and real-time detection.
+
+|===
+
+:leveloffset!:
+
+:leveloffset: +1
+
+// Module included in the following assemblies:
+// * observability/cluster_observability_operator/cluster-observability-operator-overview.adoc
+
+:_mod-docs-content-type: CONCEPT
+[id="coo-advantages_{context}"]
+= Key advantages of using {coo-short}
+
+Deploying {coo-short} helps you address monitoring requirements that are hard to achieve using the default monitoring stack.
+
+[id="coo-advantages-extensibility_{context}"]
+== Extensibility
+
+- You can add more metrics to a {coo-short}-deployed monitoring stack, which is not possible with core platform monitoring without losing support.
+- You can receive cluster-specific metrics from core platform monitoring through federation.
+- {coo-short} supports advanced monitoring scenarios like trend forecasting and anomaly detection.
+
+[id="coo-advantages-multi-tenancy_{context}"]
+== Multi-tenancy support
+
+- You can create monitoring stacks per user namespace.
+- You can deploy multiple stacks per namespace or a single stack for multiple namespaces.
+- {coo-short} enables independent configuration of alerts and receivers for different teams.
+
+[id="coo-advantages-scalability_{context}"]
+== Scalability
+
+- Supports multiple monitoring stacks on a single cluster.
+- Enables monitoring of large clusters through manual sharding.
+- Addresses cases where metrics exceed the capabilities of a single Prometheus instance.
+
+[id="coo-advantages-scalabilityflexibility_{context}"]
+== Flexibility
+
+- Decoupled from {product-title} release cycles.
+- Faster release iterations and rapid response to changing requirements.
+- Independent management of alerting rules.
+
+:leveloffset!:
+
+:leveloffset: +1
+
+// Module included in the following assemblies:
+// * observability/cluster_observability_operator/cluster-observability-operator-overview.adoc
+
+:_mod-docs-content-type: CONCEPT
+[id="coo-target-users_{context}"]
+= Target users for {coo-short}
+
+{coo-short} is ideal for users who need high customizability, scalability, and long-term data retention, especially in complex, multi-tenant enterprise environments.
+
+[id="coo-target-users-enterprise_{context}"]
+== Enterprise-level users and administrators
+
+Enterprise users require in-depth monitoring capabilities for {product-title} clusters, including advanced performance analysis, long-term data retention, trend forecasting, and historical analysis. These features help enterprises better understand resource usage, prevent performance issues, and optimize resource allocation.
+
+[id="coo-target-users-multi-tenant_{context}"]
+== Operations teams in multi-tenant environments
+
+With multi-tenancy support, {coo-short} allows different teams to configure monitoring views for their projects and applications, making it suitable for teams with flexible monitoring needs.
+
+[id="coo-target-users-devops_{context}"]
+== Development and operations teams
+
+{coo-short} provides fine-grained monitoring and customizable observability views for in-depth troubleshooting, anomaly detection, and performance tuning during development and operations.
+
+:leveloffset!:
+
+//include::modules/monitoring-understanding-the-cluster-observability-operator.adoc[leveloffset=+1]
+
+:leveloffset: +1
+
+//Module included in the following assemblies:
+//
+// * observability/cluster_observability_operator/cluster-observability-operator-overview.adoc
+
+:_mod-docs-content-type: PROCEDURE
+[id="server-side-apply_{context}"]
+= Using Server-Side Apply to customize Prometheus resources
+
+Server-Side Apply is a feature that enables collaborative management of Kubernetes resources. The control plane tracks how different users and controllers manage fields within a Kubernetes object. It introduces the concept of field managers and tracks ownership of fields. This centralized control provides conflict detection and resolution, and reduces the risk of unintended overwrites.
+
+Compared to Client-Side Apply, it is more declarative, and tracks field management instead of last applied state.
+
+Server-Side Apply:: Declarative configuration management by updating a resource's state without needing to delete and recreate it.
+
+Field management:: Users can specify which fields of a resource they want to update, without affecting the other fields.
+
+Managed fields:: Kubernetes stores metadata about who manages each field of an object in the `managedFields` field within metadata.
+
+Conflicts:: If multiple managers try to modify the same field, a conflict occurs. The applier can choose to overwrite, relinquish control, or share management.
+
+Merge strategy:: Server-Side Apply merges fields based on the actor who manages them.
+
+.Procedure
+
+. Add a `MonitoringStack` resource using the following configuration:
++
+.Example `MonitoringStack` object
++
+[source,yaml]
+----
+apiVersion: monitoring.rhobs/v1alpha1
+kind: MonitoringStack
+metadata:
+  labels:
+    coo: example
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  logLevel: debug
+  retention: 1d
+  resourceSelector:
+    matchLabels:
+      app: demo
+----
+
+. A Prometheus resource named `sample-monitoring-stack` is generated in the `coo-demo` namespace. Retrieve the managed fields of the generated Prometheus resource by running the following command:
++
+[source,terminal]
+----
+$ oc -n coo-demo get Prometheus.monitoring.rhobs -oyaml --show-managed-fields
+----
++
+.Example output
+[source,yaml]
+----
+managedFields:
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:metadata:
+      f:labels:
+        f:app.kubernetes.io/managed-by: {}
+        f:app.kubernetes.io/name: {}
+        f:app.kubernetes.io/part-of: {}
+      f:ownerReferences:
+        k:{"uid":"81da0d9a-61aa-4df3-affc-71015bcbde5a"}: {}
+    f:spec:
+      f:additionalScrapeConfigs: {}
+      f:affinity:
+        f:podAntiAffinity:
+          f:requiredDuringSchedulingIgnoredDuringExecution: {}
+      f:alerting:
+        f:alertmanagers: {}
+      f:arbitraryFSAccessThroughSMs: {}
+      f:logLevel: {}
+      f:podMetadata:
+        f:labels:
+          f:app.kubernetes.io/component: {}
+          f:app.kubernetes.io/part-of: {}
+      f:podMonitorSelector: {}
+      f:replicas: {}
+      f:resources:
+        f:limits:
+          f:cpu: {}
+          f:memory: {}
+        f:requests:
+          f:cpu: {}
+          f:memory: {}
+      f:retention: {}
+      f:ruleSelector: {}
+      f:rules:
+        f:alert: {}
+      f:securityContext:
+        f:fsGroup: {}
+        f:runAsNonRoot: {}
+        f:runAsUser: {}
+      f:serviceAccountName: {}
+      f:serviceMonitorSelector: {}
+      f:thanos:
+        f:baseImage: {}
+        f:resources: {}
+        f:version: {}
+      f:tsdb: {}
+  manager: observability-operator
+  operation: Apply
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:status:
+      .: {}
+      f:availableReplicas: {}
+      f:conditions:
+        .: {}
+        k:{"type":"Available"}:
+          .: {}
+          f:lastTransitionTime: {}
+          f:observedGeneration: {}
+          f:status: {}
+          f:type: {}
+        k:{"type":"Reconciled"}:
+          .: {}
+          f:lastTransitionTime: {}
+          f:observedGeneration: {}
+          f:status: {}
+          f:type: {}
+      f:paused: {}
+      f:replicas: {}
+      f:shardStatuses:
+        .: {}
+        k:{"shardID":"0"}:
+          .: {}
+          f:availableReplicas: {}
+          f:replicas: {}
+          f:shardID: {}
+          f:unavailableReplicas: {}
+          f:updatedReplicas: {}
+      f:unavailableReplicas: {}
+      f:updatedReplicas: {}
+  manager: PrometheusOperator
+  operation: Update
+  subresource: status
+----
+
+. Check the `metadata.managedFields` values, and observe that some fields in `metadata` and `spec` are managed by the `MonitoringStack` resource.
+
+. Modify a field that is not controlled by the `MonitoringStack` resource:
+
+.. Change `spec.enforcedSampleLimit`, which is a field not set by the `MonitoringStack` resource. Create the file `prom-spec-edited.yaml`:
++
+.`prom-spec-edited.yaml`
++
+[source,yaml]
+----
+apiVersion: monitoring.rhobs/v1
+kind: Prometheus
+metadata:
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  enforcedSampleLimit: 1000
+----
+
+.. Apply the YAML by running the following command:
++
+[source,terminal]
+----
+$ oc apply -f ./prom-spec-edited.yaml --server-side
+----
++
+[NOTE]
+====
+You must use the `--server-side` flag.
+====
+
+.. Get the changed Prometheus object and note that there is one more section in `managedFields` which has `spec.enforcedSampleLimit`:
++
+[source,terminal]
+----
+$ oc get prometheus -n coo-demo
+----
++
+.Example output
+[source,yaml]
+----
+managedFields: <1>
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:metadata:
+      f:labels:
+        f:app.kubernetes.io/managed-by: {}
+        f:app.kubernetes.io/name: {}
+        f:app.kubernetes.io/part-of: {}
+    f:spec:
+      f:enforcedSampleLimit: {} <2>
+  manager: kubectl
+  operation: Apply
+----
+<1> `managedFields`
+<2> `spec.enforcedSampleLimit`
+
+. Modify a field that is managed by the `MonitoringStack` resource:
+.. Change `spec.LogLevel`, which is a field managed by the `MonitoringStack` resource, using the following YAML configuration:
++
+[source,yaml]
+----
+# changing the logLevel from debug to info
+apiVersion: monitoring.rhobs/v1
+kind: Prometheus
+metadata:
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  logLevel: info <1>
+----
+<1> `spec.logLevel` has been added
+
+.. Apply the YAML by running the following command:
++
+[source,terminal]
+----
+$ oc apply -f ./prom-spec-edited.yaml --server-side
+----
++
+.Example output
++
+[source,terminal]
+----
+error: Apply failed with 1 conflict: conflict with "observability-operator": .spec.logLevel
+Please review the fields above--they currently have other managers. Here
+are the ways you can resolve this warning:
+* If you intend to manage all of these fields, please re-run the apply
+  command with the `--force-conflicts` flag.
+* If you do not intend to manage all of the fields, please edit your
+  manifest to remove references to the fields that should keep their
+  current managers.
+* You may co-own fields by updating your manifest to match the existing
+  value; in this case, you'll become the manager if the other manager(s)
+  stop managing the field (remove it from their configuration).
+See https://kubernetes.io/docs/reference/using-api/server-side-apply/#conflicts
+----
+
+.. Notice that the field `spec.logLevel` cannot be changed using Server-Side Apply, because it is already managed by `observability-operator`.
+
+.. Use the `--force-conflicts` flag to force the change.
++
+[source,terminal]
+----
+$ oc apply -f ./prom-spec-edited.yaml --server-side --force-conflicts
+----
++
+.Example output
++
+[source,terminal]
+----
+prometheus.monitoring.rhobs/sample-monitoring-stack serverside-applied
+----
++
+With `--force-conflicts` flag, the field can be forced to change, but since the same field is also managed by the `MonitoringStack` resource, the Observability Operator detects the change, and reverts it back to the value set by the `MonitoringStack` resource.
++
+[NOTE]
+====
+Some Prometheus fields generated by the `MonitoringStack` resource are influenced by the fields in the `MonitoringStack` `spec` stanza, for example, `logLevel`. These can be changed by changing the `MonitoringStack` `spec`.
+====
+
+.. To change the `logLevel` in the Prometheus object, apply the following YAML to change the `MonitoringStack` resource:
++
+[source,yaml]
+----
+apiVersion: monitoring.rhobs/v1alpha1
+kind: MonitoringStack
+metadata:
+  name: sample-monitoring-stack
+  labels:
+    coo: example
+spec:
+  logLevel: info
+----
+
+.. To confirm that the change has taken place, query for the log level by running the following command:
++
+[source,terminal]
+----
+$ oc -n coo-demo get Prometheus.monitoring.rhobs -o=jsonpath='{.items[0].spec.logLevel}'
+----
++
+.Example output
++
+[source,terminal]
+----
+info
+----
+
+
+[NOTE]
+====
+. If a new version of an Operator generates a field that was previously generated and controlled by an actor, the value set by the actor will be overridden.
++
+For example, you are managing a field `enforcedSampleLimit` which is not generated by the `MonitoringStack` resource. If the Observability Operator is upgraded, and the new version of the Operator generates a value for `enforcedSampleLimit`, this will overide the value you have previously set.
+
+. The `Prometheus` object generated by the `MonitoringStack` resource may contain some fields which are not explicitly set by the monitoring stack. These fields appear because they have default values.
+====
+
+:leveloffset!:
+
+[role="_additional-resources"]
+.Additional resources
+
+* link:https://kubernetes.io/docs/reference/using-api/server-side-apply/[Kubernetes documentation for Server-Side Apply (SSA)]

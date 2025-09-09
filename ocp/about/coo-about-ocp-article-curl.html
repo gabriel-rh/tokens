@@ -1,0 +1,1021 @@
+<article aria-live="polite" data-v-4d02edab><!----><div lang="en" xml:lang="en" class="docs-content-container" data-v-4d02edab><!----><!----><h1 data-id="content_chapter" class="chapter-title" data-v-4d02edab>Chapter 2. Cluster Observability Operator overview</h1><hr class="line-below-chp" data-v-4d02edab><section class="rhdocs" data-v-4d02edab><section class="chapter" id="cluster-observability-operator-overview"><p>
+			The Cluster Observability Operator (COO) is an optional component of the OpenShift Container Platform designed for creating and managing highly customizable monitoring stacks. It enables cluster administrators to automate configuration and management of monitoring needs extensively, offering a more tailored and detailed view of each namespace compared to the default OpenShift Container Platform monitoring system.
+		</p><p>
+			The COO deploys the following monitoring components:
+		</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+					<span class="strong strong"><strong>Prometheus</strong></span> - A highly available Prometheus instance capable of sending metrics to an external endpoint by using remote write.
+				</li><li class="listitem">
+					<span class="strong strong"><strong>Thanos Querier</strong></span> (optional) - Enables querying of Prometheus instances from a central location.
+				</li><li class="listitem">
+					<span class="strong strong"><strong>Alertmanager</strong></span> (optional) - Provides alert configuration capabilities for different services.
+				</li><li class="listitem">
+					<span class="strong strong"><strong><a class="link" href="observability-ui-plugins#observability-ui-plugins-overview" title="5.1.&nbsp;Observability UI plugins overview">UI plugins</a></strong></span> (optional) - Enhances the observability capabilities with plugins for monitoring, logging, distributed tracing and troubleshooting.
+				</li><li class="listitem">
+					<span class="strong strong"><strong>Korrel8r</strong></span> (optional) - Provides observability signal correlation, powered by the open source Korrel8r project.
+				</li><li class="listitem">
+					<span class="strong strong"><strong><a class="link" href="observability-ui-plugins#coo-incident-detection-overview_monitoring-ui-plugin" title="5.2.2.&nbsp;Cluster Observability Operator incident detection overview">Incident detection</a></strong></span> (optional) - Groups related alerts into incidents, to help you identify the root causes of alert bursts.
+				</li></ul></div><section class="section" id="coo-versus-default-ocp-monitoring_cluster_observability_operator_overview"><div class="titlepage"><div><div><h2 class="title"><a href="#coo-versus-default-ocp-monitoring_cluster_observability_operator_overview" class="anchor-heading test-horse">2.1.&nbsp;COO compared to default monitoring stack</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h2></div></div></div><p>
+				The COO components function independently of the default in-cluster monitoring stack, which is deployed and managed by the Cluster Monitoring Operator (CMO). Monitoring stacks deployed by the two Operators do not conflict. You can use a COO monitoring stack in addition to the default platform monitoring components deployed by the CMO.
+			</p><p>
+				The key differences between COO and the default in-cluster monitoring stack are shown in the following table:
+			</p><div class="rhdocs-table-wrapper"><rh-button variant="link" icon="expand" set="ui" class="rhdocs-table-expand-btn">Expand</rh-button><rh-table class="rhdocs-table-processed"><table class="lt-4-cols lt-7-rows"><colgroup><col style="width: 14%; " class="col_1"><!--Empty--><col style="width: 43%; " class="col_2"><!--Empty--><col style="width: 43%; " class="col_3"><!--Empty--></colgroup><thead><tr><th align="left" valign="top" id="idm140195936464032" scope="col">Feature</th><th align="left" valign="top" id="idm140195936462944" scope="col">COO</th><th align="left" valign="top" id="idm140195936461856" scope="col">Default monitoring stack</th></tr></thead><tbody><tr><td align="left" valign="top" headers="idm140195936464032"> <p>
+								<span class="strong strong"><strong>Scope and integration</strong></span>
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936462944"> <p>
+								Offers comprehensive monitoring and analytics for enterprise-level needs, covering cluster and workload performance.
+							</p>
+							 <p>
+								However, it lacks direct integration with OpenShift Container Platform and typically requires an external Grafana instance for dashboards.
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936461856"> <p>
+								Limited to core components within the cluster, for example, API server and etcd, and to OpenShift-specific namespaces.
+							</p>
+							 <p>
+								There is deep integration into OpenShift Container Platform including console dashboards and alert management in the console.
+							</p>
+							 </td></tr><tr><td align="left" valign="top" headers="idm140195936464032"> <p>
+								<span class="strong strong"><strong>Configuration and customization</strong></span>
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936462944"> <p>
+								Broader configuration options including data retention periods, storage methods, and collected data types.
+							</p>
+							 <p>
+								The COO can delegate ownership of single configurable fields in custom resources to users by using Server-Side Apply (SSA), which enhances customization.
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936461856"> <p>
+								Built-in configurations with limited customization options.
+							</p>
+							 </td></tr><tr><td align="left" valign="top" headers="idm140195936464032"> <p>
+								<span class="strong strong"><strong>Data retention and storage</strong></span>
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936462944"> <p>
+								Long-term data retention, supporting historical analysis and capacity planning
+							</p>
+							 </td><td align="left" valign="top" headers="idm140195936461856"> <p>
+								Shorter data retention times, focusing on short-term monitoring and real-time detection.
+							</p>
+							 </td></tr></tbody></table></rh-table><button class="rhdocs-table-show-more-btn"><span class="rhdocs-table-show-more-btn-content">Show more<rh-icon icon="caret-down" set="microns"></rh-icon></span></button></div></section><section class="section" id="coo-advantages_cluster_observability_operator_overview"><div class="titlepage"><div><div><h2 class="title"><a href="#coo-advantages_cluster_observability_operator_overview" class="anchor-heading test-horse">2.2.&nbsp;Key advantages of using COO</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h2></div></div></div><p>
+				Deploying COO helps you address monitoring requirements that are hard to achieve using the default monitoring stack.
+			</p><section class="section" id="coo-advantages-extensibility_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-advantages-extensibility_cluster_observability_operator_overview" class="anchor-heading test-horse">2.2.1.&nbsp;Extensibility</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+							You can add more metrics to a COO-deployed monitoring stack, which is not possible with core platform monitoring without losing support.
+						</li><li class="listitem">
+							You can receive cluster-specific metrics from core platform monitoring through federation.
+						</li><li class="listitem">
+							COO supports advanced monitoring scenarios like trend forecasting and anomaly detection.
+						</li></ul></div></section><section class="section" id="coo-advantages-multi-tenancy_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-advantages-multi-tenancy_cluster_observability_operator_overview" class="anchor-heading test-horse">2.2.2.&nbsp;Multi-tenancy support</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+							You can create monitoring stacks per user namespace.
+						</li><li class="listitem">
+							You can deploy multiple stacks per namespace or a single stack for multiple namespaces.
+						</li><li class="listitem">
+							COO enables independent configuration of alerts and receivers for different teams.
+						</li></ul></div></section><section class="section" id="coo-advantages-scalability_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-advantages-scalability_cluster_observability_operator_overview" class="anchor-heading test-horse">2.2.3.&nbsp;Scalability</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+							Supports multiple monitoring stacks on a single cluster.
+						</li><li class="listitem">
+							Enables monitoring of large clusters through manual sharding.
+						</li><li class="listitem">
+							Addresses cases where metrics exceed the capabilities of a single Prometheus instance.
+						</li></ul></div></section><section class="section" id="coo-advantages-scalabilityflexibility_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-advantages-scalabilityflexibility_cluster_observability_operator_overview" class="anchor-heading test-horse">2.2.4.&nbsp;Flexibility</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+							Decoupled from OpenShift Container Platform release cycles.
+						</li><li class="listitem">
+							Faster release iterations and rapid response to changing requirements.
+						</li><li class="listitem">
+							Independent management of alerting rules.
+						</li></ul></div></section></section><section class="section" id="coo-target-users_cluster_observability_operator_overview"><div class="titlepage"><div><div><h2 class="title"><a href="#coo-target-users_cluster_observability_operator_overview" class="anchor-heading test-horse">2.3.&nbsp;Target users for COO</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h2></div></div></div><p>
+				COO is ideal for users who need high customizability, scalability, and long-term data retention, especially in complex, multi-tenant enterprise environments.
+			</p><section class="section" id="coo-target-users-enterprise_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-target-users-enterprise_cluster_observability_operator_overview" class="anchor-heading test-horse">2.3.1.&nbsp;Enterprise-level users and administrators</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><p>
+					Enterprise users require in-depth monitoring capabilities for OpenShift Container Platform clusters, including advanced performance analysis, long-term data retention, trend forecasting, and historical analysis. These features help enterprises better understand resource usage, prevent performance issues, and optimize resource allocation.
+				</p></section><section class="section" id="coo-target-users-multi-tenant_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-target-users-multi-tenant_cluster_observability_operator_overview" class="anchor-heading test-horse">2.3.2.&nbsp;Operations teams in multi-tenant environments</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><p>
+					With multi-tenancy support, COO allows different teams to configure monitoring views for their projects and applications, making it suitable for teams with flexible monitoring needs.
+				</p></section><section class="section" id="coo-target-users-devops_cluster_observability_operator_overview"><div class="titlepage"><div><div><h3 class="title"><a href="#coo-target-users-devops_cluster_observability_operator_overview" class="anchor-heading test-horse">2.3.3.&nbsp;Development and operations teams</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h3></div></div></div><p>
+					COO provides fine-grained monitoring and customizable observability views for in-depth troubleshooting, anomaly detection, and performance tuning during development and operations.
+				</p></section></section><section class="section" id="server-side-apply_cluster_observability_operator_overview"><div class="titlepage"><div><div><h2 class="title"><a href="#server-side-apply_cluster_observability_operator_overview" class="anchor-heading test-horse">2.4.&nbsp;Using Server-Side Apply to customize Prometheus resources</a><rh-tooltip position="top"><rh-button class="copy-link-btn" variant="link" aria-label="Copy link to clipboard"><rh-icon class="link-icon" set="ui" icon="link" size="sm" aria-label="Copy link"></rh-icon></rh-button><div slot="content" class="section-link tooltip-content"><span class="copy-link-text">Copy link</span><span class="copy-link-text-confirmation" hidden>Link copied to clipboard!<rh-icon set="ui" class="check-icon" icon="check-circle" size="sm"></rh-icon></span></div></rh-tooltip></h2></div></div></div><p>
+				Server-Side Apply is a feature that enables collaborative management of Kubernetes resources. The control plane tracks how different users and controllers manage fields within a Kubernetes object. It introduces the concept of field managers and tracks ownership of fields. This centralized control provides conflict detection and resolution, and reduces the risk of unintended overwrites.
+			</p><p>
+				Compared to Client-Side Apply, it is more declarative, and tracks field management instead of last applied state.
+			</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">Server-Side Apply</span></dt><dd>
+							Declarative configuration management by updating a resource’s state without needing to delete and recreate it.
+						</dd><dt><span class="term">Field management</span></dt><dd>
+							Users can specify which fields of a resource they want to update, without affecting the other fields.
+						</dd><dt><span class="term">Managed fields</span></dt><dd>
+							Kubernetes stores metadata about who manages each field of an object in the <code class="literal">managedFields</code> field within metadata.
+						</dd><dt><span class="term">Conflicts</span></dt><dd>
+							If multiple managers try to modify the same field, a conflict occurs. The applier can choose to overwrite, relinquish control, or share management.
+						</dd><dt><span class="term">Merge strategy</span></dt><dd>
+							Server-Side Apply merges fields based on the actor who manages them.
+						</dd></dl></div><div class="orderedlist"><p class="title"><strong>Procedure</strong></p><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
+						Add a <code class="literal">MonitoringStack</code> resource using the following configuration:
+					</p><div class="formalpara"><p class="title"><strong>Example <code class="literal">MonitoringStack</code> object</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>apiVersion: monitoring.rhobs/v1alpha1
+kind: MonitoringStack
+metadata:
+  labels:
+    coo: example
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  logLevel: debug
+  retention: 1d
+  resourceSelector:
+    matchLabels:
+      app: demo</pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1alpha1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> MonitoringStack
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">coo</span><span class="token punctuation">:</span> example
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> sample<span class="token punctuation">-</span>monitoring<span class="token punctuation">-</span>stack
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> coo<span class="token punctuation">-</span>demo
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">logLevel</span><span class="token punctuation">:</span> debug
+  <span class="token key atrule">retention</span><span class="token punctuation">:</span> 1d
+  <span class="token key atrule">resourceSelector</span><span class="token punctuation">:</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> demo</code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+						<p></p></div></li><li class="listitem"><p class="simpara">
+						A Prometheus resource named <code class="literal">sample-monitoring-stack</code> is generated in the <code class="literal">coo-demo</code> namespace. Retrieve the managed fields of the generated Prometheus resource by running the following command:
+					</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc -n coo-demo get Prometheus.monitoring.rhobs -oyaml --show-managed-fields</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc <span class="token parameter variable">-n</span> coo-demo get Prometheus.monitoring.rhobs <span class="token parameter variable">-oyaml</span> --show-managed-fields</span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="formalpara"><p class="title"><strong>Example output</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>managedFields:
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:metadata:
+      f:labels:
+        f:app.kubernetes.io/managed-by: {}
+        f:app.kubernetes.io/name: {}
+        f:app.kubernetes.io/part-of: {}
+      f:ownerReferences:
+        k:{"uid":"81da0d9a-61aa-4df3-affc-71015bcbde5a"}: {}
+    f:spec:
+      f:additionalScrapeConfigs: {}
+      f:affinity:
+        f:podAntiAffinity:
+          f:requiredDuringSchedulingIgnoredDuringExecution: {}
+      f:alerting:
+        f:alertmanagers: {}
+      f:arbitraryFSAccessThroughSMs: {}
+      f:logLevel: {}
+      f:podMetadata:
+        f:labels:
+          f:app.kubernetes.io/component: {}
+          f:app.kubernetes.io/part-of: {}
+      f:podMonitorSelector: {}
+      f:replicas: {}
+      f:resources:
+        f:limits:
+          f:cpu: {}
+          f:memory: {}
+        f:requests:
+          f:cpu: {}
+          f:memory: {}
+      f:retention: {}
+      f:ruleSelector: {}
+      f:rules:
+        f:alert: {}
+      f:securityContext:
+        f:fsGroup: {}
+        f:runAsNonRoot: {}
+        f:runAsUser: {}
+      f:serviceAccountName: {}
+      f:serviceMonitorSelector: {}
+      f:thanos:
+        f:baseImage: {}
+        f:resources: {}
+        f:version: {}
+      f:tsdb: {}
+  manager: observability-operator
+  operation: Apply
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:status:
+      .: {}
+      f:availableReplicas: {}
+      f:conditions:
+        .: {}
+        k:{"type":"Available"}:
+          .: {}
+          f:lastTransitionTime: {}
+          f:observedGeneration: {}
+          f:status: {}
+          f:type: {}
+        k:{"type":"Reconciled"}:
+          .: {}
+          f:lastTransitionTime: {}
+          f:observedGeneration: {}
+          f:status: {}
+          f:type: {}
+      f:paused: {}
+      f:replicas: {}
+      f:shardStatuses:
+        .: {}
+        k:{"shardID":"0"}:
+          .: {}
+          f:availableReplicas: {}
+          f:replicas: {}
+          f:shardID: {}
+          f:unavailableReplicas: {}
+          f:updatedReplicas: {}
+      f:unavailableReplicas: {}
+      f:updatedReplicas: {}
+  manager: PrometheusOperator
+  operation: Update
+  subresource: status</pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token key atrule">managedFields</span><span class="token punctuation">:</span>
+<span class="token punctuation">-</span> <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1
+  <span class="token key atrule">fieldsType</span><span class="token punctuation">:</span> FieldsV1
+  <span class="token key atrule">fieldsV1</span><span class="token punctuation">:</span>
+    <span class="token key atrule">f:metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">f:labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:app.kubernetes.io/managed-by</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:app.kubernetes.io/name</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:app.kubernetes.io/part-of</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:ownerReferences</span><span class="token punctuation">:</span>
+        k<span class="token punctuation">:</span><span class="token punctuation">{</span>"uid"<span class="token punctuation">:</span><span class="token string">"81da0d9a-61aa-4df3-affc-71015bcbde5a"</span><span class="token punctuation">}</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token key atrule">f:spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">f:additionalScrapeConfigs</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:affinity</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:podAntiAffinity</span><span class="token punctuation">:</span>
+          <span class="token key atrule">f:requiredDuringSchedulingIgnoredDuringExecution</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:alerting</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:alertmanagers</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:arbitraryFSAccessThroughSMs</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:logLevel</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:podMetadata</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:labels</span><span class="token punctuation">:</span>
+          <span class="token key atrule">f:app.kubernetes.io/component</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:app.kubernetes.io/part-of</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:podMonitorSelector</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:replicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:resources</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:limits</span><span class="token punctuation">:</span>
+          <span class="token key atrule">f:cpu</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:memory</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:requests</span><span class="token punctuation">:</span>
+          <span class="token key atrule">f:cpu</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:memory</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:retention</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:ruleSelector</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:rules</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:alert</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:securityContext</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:fsGroup</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:runAsNonRoot</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:runAsUser</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:serviceAccountName</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:serviceMonitorSelector</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:thanos</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:baseImage</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:resources</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:version</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:tsdb</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token key atrule">manager</span><span class="token punctuation">:</span> observability<span class="token punctuation">-</span>operator
+  <span class="token key atrule">operation</span><span class="token punctuation">:</span> Apply
+<span class="token punctuation">-</span> <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1
+  <span class="token key atrule">fieldsType</span><span class="token punctuation">:</span> FieldsV1
+  <span class="token key atrule">fieldsV1</span><span class="token punctuation">:</span>
+    <span class="token key atrule">f:status</span><span class="token punctuation">:</span>
+      <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:availableReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:conditions</span><span class="token punctuation">:</span>
+        <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        k<span class="token punctuation">:</span><span class="token punctuation">{</span>"type"<span class="token punctuation">:</span><span class="token string">"Available"</span><span class="token punctuation">}</span><span class="token punctuation">:</span>
+          <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:lastTransitionTime</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:observedGeneration</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:status</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:type</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        k<span class="token punctuation">:</span><span class="token punctuation">{</span>"type"<span class="token punctuation">:</span><span class="token string">"Reconciled"</span><span class="token punctuation">}</span><span class="token punctuation">:</span>
+          <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:lastTransitionTime</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:observedGeneration</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:status</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:type</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:paused</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:replicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:shardStatuses</span><span class="token punctuation">:</span>
+        <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        k<span class="token punctuation">:</span><span class="token punctuation">{</span>"shardID"<span class="token punctuation">:</span><span class="token string">"0"</span><span class="token punctuation">}</span><span class="token punctuation">:</span>
+          <span class="token key atrule">.</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:availableReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:replicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:shardID</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:unavailableReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+          <span class="token key atrule">f:updatedReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:unavailableReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+      <span class="token key atrule">f:updatedReplicas</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token key atrule">manager</span><span class="token punctuation">:</span> PrometheusOperator
+  <span class="token key atrule">operation</span><span class="token punctuation">:</span> Update
+  <span class="token key atrule">subresource</span><span class="token punctuation">:</span> status</code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+						<p></p></div></li><li class="listitem">
+						Check the <code class="literal">metadata.managedFields</code> values, and observe that some fields in <code class="literal">metadata</code> and <code class="literal">spec</code> are managed by the <code class="literal">MonitoringStack</code> resource.
+					</li><li class="listitem"><p class="simpara">
+						Modify a field that is not controlled by the <code class="literal">MonitoringStack</code> resource:
+					</p><div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem"><p class="simpara">
+								Change <code class="literal">spec.enforcedSampleLimit</code>, which is a field not set by the <code class="literal">MonitoringStack</code> resource. Create the file <code class="literal">prom-spec-edited.yaml</code>:
+							</p><div class="formalpara"><p class="title"><strong><code class="literal">prom-spec-edited.yaml</code></strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>apiVersion: monitoring.rhobs/v1
+kind: Prometheus
+metadata:
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  enforcedSampleLimit: 1000</pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Prometheus
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> sample<span class="token punctuation">-</span>monitoring<span class="token punctuation">-</span>stack
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> coo<span class="token punctuation">-</span>demo
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">enforcedSampleLimit</span><span class="token punctuation">:</span> <span class="token number">1000</span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+								<p></p></div></li><li class="listitem"><p class="simpara">
+								Apply the YAML by running the following command:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc apply -f ./prom-spec-edited.yaml --server-side</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc apply <span class="token parameter variable">-f</span> ./prom-spec-edited.yaml --server-side</span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><rh-alert class="admonition note" state="info"><div class="admonition_header" slot="header">Note</div><div><p>
+									You must use the <code class="literal">--server-side</code> flag.
+								</p></div></rh-alert></li><li class="listitem"><p class="simpara">
+								Get the changed Prometheus object and note that there is one more section in <code class="literal">managedFields</code> which has <code class="literal">spec.enforcedSampleLimit</code>:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc get prometheus -n coo-demo</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc get prometheus <span class="token parameter variable">-n</span> coo-demo</span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="formalpara"><p class="title"><strong>Example output</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>managedFields:
+- apiVersion: monitoring.rhobs/v1
+  fieldsType: FieldsV1
+  fieldsV1:
+    f:metadata:
+      f:labels:
+        f:app.kubernetes.io/managed-by: {}
+        f:app.kubernetes.io/name: {}
+        f:app.kubernetes.io/part-of: {}
+    f:spec:
+      f:enforcedSampleLimit: {}
+  manager: kubectl
+  operation: Apply</pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token key atrule">managedFields</span><span class="token punctuation">:</span> </code></pre><rh-badge id="CO1-1" state="info">1</rh-badge>
+<pre class="language-yaml"><code class="language-yaml">
+<span class="token punctuation">-</span> <span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1
+  <span class="token key atrule">fieldsType</span><span class="token punctuation">:</span> FieldsV1
+  <span class="token key atrule">fieldsV1</span><span class="token punctuation">:</span>
+    <span class="token key atrule">f:metadata</span><span class="token punctuation">:</span>
+      <span class="token key atrule">f:labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">f:app.kubernetes.io/managed-by</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:app.kubernetes.io/name</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+        <span class="token key atrule">f:app.kubernetes.io/part-of</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+    <span class="token key atrule">f:spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">f:enforcedSampleLimit</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> </code></pre><rh-badge id="CO1-2" state="info">2</rh-badge>
+<pre class="language-yaml"><code class="language-yaml">
+  <span class="token key atrule">manager</span><span class="token punctuation">:</span> kubectl
+  <span class="token key atrule">operation</span><span class="token punctuation">:</span> Apply</code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+								<p></p></div><div class="calloutlist"><dl class="calloutlist"><dt><a href="#CO1-1"><span class="callout">1</span></a> </dt><dd><div class="para">
+										<code class="literal">managedFields</code>
+									</div></dd><dt><a href="#CO1-2"><span class="callout">2</span></a> </dt><dd><div class="para">
+										<code class="literal">spec.enforcedSampleLimit</code>
+									</div></dd></dl></div></li></ol></div></li><li class="listitem"><p class="simpara">
+						Modify a field that is managed by the <code class="literal">MonitoringStack</code> resource:
+					</p><div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem"><p class="simpara">
+								Change <code class="literal">spec.LogLevel</code>, which is a field managed by the <code class="literal">MonitoringStack</code> resource, using the following YAML configuration:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden># changing the logLevel from debug to info
+apiVersion: monitoring.rhobs/v1
+kind: Prometheus
+metadata:
+  name: sample-monitoring-stack
+  namespace: coo-demo
+spec:
+  logLevel: info </pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token comment"># changing the logLevel from debug to info</span>
+<span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Prometheus
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> sample<span class="token punctuation">-</span>monitoring<span class="token punctuation">-</span>stack
+  <span class="token key atrule">namespace</span><span class="token punctuation">:</span> coo<span class="token punctuation">-</span>demo
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">logLevel</span><span class="token punctuation">:</span> info </code></pre><rh-badge id="CO2-1" state="info">1</rh-badge>
+<pre class="language-yaml"><code class="language-yaml"></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="calloutlist"><dl class="calloutlist"><dt><a href="#CO2-1"><span class="callout">1</span></a> </dt><dd><div class="para">
+										<code class="literal">spec.logLevel</code> has been added
+									</div></dd></dl></div></li><li class="listitem"><p class="simpara">
+								Apply the YAML by running the following command:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc apply -f ./prom-spec-edited.yaml --server-side</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc apply <span class="token parameter variable">-f</span> ./prom-spec-edited.yaml --server-side</span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="formalpara"><p class="title"><strong>Example output</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>error: Apply failed with 1 conflict: conflict with "observability-operator": .spec.logLevel
+Please review the fields above--they currently have other managers. Here
+are the ways you can resolve this warning:
+* If you intend to manage all of these fields, please re-run the apply
+  command with the `--force-conflicts` flag.
+* If you do not intend to manage all of the fields, please edit your
+  manifest to remove references to the fields that should keep their
+  current managers.
+* You may co-own fields by updating your manifest to match the existing
+  value; in this case, you'll become the manager if the other manager(s)
+  stop managing the field (remove it from their configuration).
+See https://kubernetes.io/docs/reference/using-api/server-side-apply/#conflicts</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token output">error: Apply failed with 1 conflict: conflict with "observability-operator": .spec.logLevel
+Please review the fields above--they currently have other managers. Here
+are the ways you can resolve this warning:
+* If you intend to manage all of these fields, please re-run the apply
+  command with the `--force-conflicts` flag.
+* If you do not intend to manage all of the fields, please edit your
+  manifest to remove references to the fields that should keep their
+  current managers.
+* You may co-own fields by updating your manifest to match the existing
+  value; in this case, you'll become the manager if the other manager(s)
+  stop managing the field (remove it from their configuration).
+See https://kubernetes.io/docs/reference/using-api/server-side-apply/#conflicts</span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+								<p></p></div></li><li class="listitem">
+								Notice that the field <code class="literal">spec.logLevel</code> cannot be changed using Server-Side Apply, because it is already managed by <code class="literal">observability-operator</code>.
+							</li><li class="listitem"><p class="simpara">
+								Use the <code class="literal">--force-conflicts</code> flag to force the change.
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc apply -f ./prom-spec-edited.yaml --server-side --force-conflicts</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc apply <span class="token parameter variable">-f</span> ./prom-spec-edited.yaml --server-side --force-conflicts</span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="formalpara"><p class="title"><strong>Example output</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>prometheus.monitoring.rhobs/sample-monitoring-stack serverside-applied</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token output">prometheus.monitoring.rhobs/sample-monitoring-stack serverside-applied</span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+								<p></p></div><p class="simpara">
+								With <code class="literal">--force-conflicts</code> flag, the field can be forced to change, but since the same field is also managed by the <code class="literal">MonitoringStack</code> resource, the Observability Operator detects the change, and reverts it back to the value set by the <code class="literal">MonitoringStack</code> resource.
+							</p><rh-alert class="admonition note" state="info"><div class="admonition_header" slot="header">Note</div><div><p>
+									Some Prometheus fields generated by the <code class="literal">MonitoringStack</code> resource are influenced by the fields in the <code class="literal">MonitoringStack</code> <code class="literal">spec</code> stanza, for example, <code class="literal">logLevel</code>. These can be changed by changing the <code class="literal">MonitoringStack</code> <code class="literal">spec</code>.
+								</p></div></rh-alert></li><li class="listitem"><p class="simpara">
+								To change the <code class="literal">logLevel</code> in the Prometheus object, apply the following YAML to change the <code class="literal">MonitoringStack</code> resource:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="yaml" line-numbers="hidden" data-expandable="true" style="overflow: hidden;">
+<pre hidden>apiVersion: monitoring.rhobs/v1alpha1
+kind: MonitoringStack
+metadata:
+  name: sample-monitoring-stack
+  labels:
+    coo: example
+spec:
+  logLevel: info</pre>
+<pre class="language-yaml" tabindex="-1"><code class="language-yaml"><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> monitoring.rhobs/v1alpha1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> MonitoringStack
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> sample<span class="token punctuation">-</span>monitoring<span class="token punctuation">-</span>stack
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">coo</span><span class="token punctuation">:</span> example
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">logLevel</span><span class="token punctuation">:</span> info</code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div></li><li class="listitem"><p class="simpara">
+								To confirm that the change has taken place, query for the log level by running the following command:
+							</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>oc -n coo-demo get Prometheus.monitoring.rhobs -o=jsonpath='{.items[0].spec.logLevel}'</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token command"><span class="token shell-symbol important">$</span> <span class="token bash language-bash">oc <span class="token parameter variable">-n</span> coo-demo get Prometheus.monitoring.rhobs <span class="token parameter variable">-o</span><span class="token operator">=</span>jsonpath<span class="token operator">=</span><span class="token string">'{.items[0].spec.logLevel}'</span></span></span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div><div class="formalpara"><p class="title"><strong>Example output</strong></p><p>
+
+</p><div class="content-code-block-container"><rh-code-block highlighting="prerendered" language="shell-session" line-numbers="hidden">
+<pre hidden>info</pre>
+<pre class="language-shell-session" tabindex="-1"><code class="language-shell-session"><span class="token output">info</span></code></pre>
+</rh-code-block>
+<div class="content-code-block-container-actions">
+<rh-tooltip>
+<slot slot="content" name="action-label-copy">
+<span class="copy-link-text">Copy to Clipboard</span>
+<span class="copy-link-text-confirmation" hidden>Copied!</span>
+</slot>
+<button class="shadow-fab">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12 0H2C.9 0 0 .9 0 2v10h1V2c0-.6.4-1 1-1h10V0z"/>
+  <path fill="currentColor" d="M18 20H8c-1.1 0-2-.9-2-2V8c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zM8 7c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1H8z"/>
+</svg>
+</button>
+</rh-tooltip>
+<rh-tooltip>
+<slot slot="content" name="action-label-wrap">
+<span class="wrap-link-text">Toggle word wrap</span>
+<span class="unwrap-link-text" hidden>Toggle overflow</span>
+</slot>
+<button class="shadow-fab wrap-toggle-btn" data-wrapped="false">
+  <span class="wrap-toggle-icons">
+    <svg class="wrap-icon" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" style="display: inline;" data-visible-when="wrapped-false">
+      <path d="M19 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0ZM10.82 4.992C9.877 4.996 8.31 5.57 8.174 6c1.21.03 2.432-.073 3.635.08 2.181.383 3.677 2.796 3.066 4.922-.41 1.753-2.108 2.995-3.877 3.014L11 14H5.207l2.682-2.682-.707-.707L3.293 14.5l3.889 3.889.707-.707L5.207 15h5.736l.004-.008c1.444.005 2.896-.59 3.832-1.722 1.65-1.82 1.612-4.85-.08-6.63A5 5 0 0 0 11 5a1.948 1.948 0 0 0-.18-.008z"/>
+      <path d="M4 5h7c-.039.313.077.781-.057 1H4V5ZM0 0c.313.039.781-.077 1 .057V20c-.313-.039-.781.077-1-.057V0Z"/>
+    </svg>
+    <svg class="unwrap-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 20" style="display: none;" data-visible-when="wrapped-true">
+      <path fill="currentColor" d="M12 13h1v7h-1zM12 0h1v7h-1z"/>
+      <path stroke="currentColor" d="M16.465 6.464 20 10l-3.535 3.536"/>
+      <path fill="currentColor" d="M3 9.5h17v1H3zM0 0h1v20H0z"/>
+    </svg>
+  </span>
+</button>
+</rh-tooltip>
+</div>
+</div>
+
+								<p></p></div></li></ol></div></li></ol></div><rh-alert class="admonition note" state="info"><div class="admonition_header" slot="header">Note</div><div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
+							If a new version of an Operator generates a field that was previously generated and controlled by an actor, the value set by the actor will be overridden.
+						</p><p class="simpara">
+							For example, you are managing a field <code class="literal">enforcedSampleLimit</code> which is not generated by the <code class="literal">MonitoringStack</code> resource. If the Observability Operator is upgraded, and the new version of the Operator generates a value for <code class="literal">enforcedSampleLimit</code>, this will overide the value you have previously set.
+						</p></li><li class="listitem">
+							The <code class="literal">Prometheus</code> object generated by the <code class="literal">MonitoringStack</code> resource may contain some fields which are not explicitly set by the monitoring stack. These fields appear because they have default values.
+						</li></ol></div></div></rh-alert><aside class="itemizedlist _additional-resources">
+    <p class="title"><strong>Additional resources</strong></p><ul class="itemizedlist _additional-resources" type="disc"><li class="listitem">
+						<a class="link" href="https://kubernetes.io/docs/reference/using-api/server-side-apply/">Kubernetes documentation for Server-Side Apply (SSA)</a>
+					</li></ul>
+</aside></section></section></section><nav class="pagination" aria-label="pagination" data-v-4d02edab data-v-fca5b11c><rh-cta aria-disabled="false" class="previous-btn" variant="brick" data-v-fca5b11c><a href="/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/cluster-observability-operator-release-notes" data-v-fca5b11c>Previous</a></rh-cta><rh-cta aria-disabled="false" class="next-btn" variant="brick" data-v-fca5b11c><a href="/en/documentation/openshift_container_platform/4.19/html/cluster_observability_operator/installing-cluster-observability-operators" data-v-fca5b11c>Next</a></rh-cta></nav></div></article>
